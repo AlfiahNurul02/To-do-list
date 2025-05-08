@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="styles.css">
+<style type="text/css" id="dcoder_stylesheet">const inputBox = document.getELementById("input-box");
+const lisrcontainer = document.getELementById("list-container");
+const categorySelect = document.getELementById("category");
+const filterSelect = document.getELementById("filter");
+const completedCounter = document.getELementById("completed-counter");
+const uncompletedcounter  = document.getELementById(uncompleted-counter");
+const clearAllButton = document.getELementById("clear-all");
+const colorPicker = document.getELementById("color-picker");
+
+/ / Dark Mode Toggle
+const darkmodeButton = document.getELementById("dark-mode-toggle");
+darkModebutton.addEventListener("click", () => {
+         document.body.classList.toggle("dark-mode");
+});
+
+/ / simpan & muat tugas dari local storage
+function saveTasks() {
+         const tasks = [ ] ;
+         document.querySelectorAll("#list-container li").forEach(li => {
+             tasks.push({
+                    text: li.querySelector(".task'text").innerText,
+                    completed: li.classList.contains("completed),
+                    category: li.dataset.category,
+                    color: li.style.backgroundColor
+              } ) ;
+       } ) ;
+       localstorage.setitem("tasks",  JSON.stringify(tasks) ) ;
+}
+
+function loadtasks() {
+    listcontainer,innerHTML = "", //kosongkan daftar sebelum memuat ulang
+    const const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.forEach(task => addTask(task.text,task.completed, task color, task.category, false));
+    updateCounter();
+    }
+    
+    // tambah tugas baru
+    function addtask(taskText = null,completed = false, taskColor = null, taskcategory = null, save =true) {
+            if (itaskText) {
+            taskText = inputBox.value trim();
+            taskColor = colopicker.value;
+            taskCategory = categoryselect.value;
+    
+            if (itaskText) {
+                 alert("silahkan masukan tugas!");
+                  return;
+              }
+        }
+    
+          const li = document.createElement("li");
+          li.style.backgroundkolor = tesColor;
+          li.classList.add("task.item");
+          li.dataset.category = taskCategory; // simpan kategori dalam atribut data
+
+          li innerHTML =
+          <label style-="flex: 1; display flex; align"-items: center;">
+               <input type="checxbox" class="task-checkbox" ${completed ? "checked" : ""}>
+               <span class="task-text">${taskText} <small>(${taskCategory})</small></span>
+           </label>
+           <div class="button-group">
+              <button class="edit-btn">✏️</button>
+              <button class="delete-btn">❌</button>
+            </div>
+          ;
+          
+         if (completed) {
+              li.classList.add("completed");
+        }     
+
+        listcontainer.appendchild(li);
+        inputBox.value = "";
+
+        if (save) saveTasks();
+        updatecounter(); // perbarui jumlah selesai/belum selesai
+
+        // event Listener untuk checkbox
+        const checkbox = li.querySelector(".task-checkbox");
+        checkbox.addEventListener("chage", function () {
+              li.classList.Toggle("completed", checkbox.checked);
+              saveTasks();
+              updateCounter();
+              filterTasks(); // perbarui tampilan setelan mengubah status 
+        });
+        
+        // edit tugas
+        li.querySelector(".edit-btn"),addEventListener("click",function () {
+              const newText = prompt("Edit tugas", taskText);
+              if (newText) {
+                     li,querySelector(",task-text").innerText = $(newText) <small>($taskCategory})</small>`;
+                     save task();
+              }
+        });
+        
+        // hapus tugas
+        li.querySelector(".delete-btn").addEventListener("click", function () {
+        if (confirm(hapus tugas ini?")) {
+           li.remove();
+           saveTask();
+           updateCounter();
+         }     
+       });
+
+       filterTasks();// pastikan filter tetap berlaku setelah menambah tugas
+     }   
+
+// Perbaiki fungsi Filter Tugas
+function filterTasks() {
+     const filtervalue = filterSelect.value;
+     document.querySelectorAll(",task-item").forEach(li => {
+       const category = li.dataset.category;
+       const isCompleted = li.classList.contains("completed");
+
+       if (filterValue === "all" || category === filterValue) {
+              li.style.display = "flex";
+          } else {
+              li.style.display = "none";
+          }
+      });
+  }
+  
+  // Perbarui Jumlah Selesai/Belum Selesai
+  function updateCounter() {
+      const totalTasks = document.querySelectorAll(".task-item").length;
+      const completedTasks = document.querySelectorAll(".task-item.completed").length;
+      const uncompletedTasks = totalTasks - completedTasks;
+  
+      completedCounter.innerText = completedTasks;
+      uncompletedCounter.innerText = uncompletedTasks;
+  }
+  
+  // Event Listener untuk Filter
+  filterSelect.addEventListener("change", filterTasks);
+
+  // Event Listener untuk hapus semua
+  clearAllButton.addEventListener("click",() => {
+       if (confirm("hapus semua tugas?")) {
+       listContainer.innerHTML ="";
+       localStorage.removeItem("tasks");
+       updateCounter();
+       } 
+});
+
+// panggil fungsi untuk memuat tugas saat halaman dimuat
+loadTasks();</style></head>
+<body>
+    <div id="todo-container">
+     <header>
+        <h1>To-Do List</h1>
+        <button id="dark-mode-toggle">🌙</button>
+    </header>    
+
+    <div id="todo-form"><input type="text" id="input-box" placeholder="Tambahkan tugas...">
+        <select id="category">
+            <option value="work">work</option>
+            <option value="personal">personal</option>
+            <option value="study">study</option>
+        </select>
+        <input type="color" id="color-picker" value="#ff9800">
+        <button id="input-button" onclick="addTask() ">tambah</button>
+    </div>
+    
+    <div id="filter-section">
+        <label for="filter">filter:</label>
+        <select id="filter">
+            <option value="all">semua</option>
+            <option value="work">work</option>
+            <option value="personal">personal</option>
+            <option value="study">study</option>
+       </select>
+       <button id="clear-all">hapus semua</button>
+     </div>
+     
+     <h2>Daftar tugas</h2>
+     <ul id="list-container"></ul>
+        
+     <div class="counter-container">
+        Selesai: <span id="completed-counter"></span>
+        Belum selesai: <span id="uncompleted-counter">0</span>
+     </div>
+    </div>
+    
+    <script src="script.js"></script>
+ 
+ <script type="text/javascript" id="dcoder_script">/*Style dasar */
+body {
+    background: #f4f4f4;
+    font-family: Arial,sans-serif;
+    text-align: center;
+    margin-top: 50px;
+}
+
+#todo-container {
+    background: white;
+    width: 90%;
+    max-width: 450px;
+    margin: 0 auto;
+    border: 2px solid #2e60ea;
+    padding: 20px;
+    color: black;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+}   
+
+h1 {
+    margin-bottom: 15px;
+    font-size: 24px;
+    columns: #2e60ea;
+}
+
+#todo-form {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+#input-box {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+select,button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#category {
+    background-color: rgba(255,255,255,0);
+    color: black;
+}
+
+#input-button {
+    background-color: #2e60ea;
+    color: white;
+}
+
+#input-button:hover {
+    background-color: #9eb7fd;
+}
+
+
+#filter-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+#clear-all {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+}
+
+/* Task List */
+ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+    text-align: left;
+}
+
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+    position: relative;
+    border: 2px solid transparent; / Tambahkan border agar terlihat rapi */
+}
+
+li: hover {
+    transform: scale(1.02);
+    border: 2px solid #fff; /*highlight saat hover */
+}
+
+,completed {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+/* Grup tombol agar tetap di kanan */
+.button-group {
+    display: flex;
+    gap: 5px; /* beri jarak antar tombol */
+    position: absolute;
+    right: 10px; /* Tetapkan posisi di kanan */
+}
+
+/* Tombol Edit & hapus */
+.edit-btn, delete-btn {
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    border: none;
+    transition: 0.3s;
+}
+
+/* Dark Mode */
+.dark-mode {
+    background-color: #222;
+    color: #fff;
+}
+
+.dark-mode #todo-container {
+    background-color: #333;
+    color: white;
+}   </script></body></html>   
